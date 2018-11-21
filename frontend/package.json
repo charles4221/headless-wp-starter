@@ -12,16 +12,20 @@
         "docker:stop": "docker stop frontend",
         "docker:start": "docker start frontend && yarn run docker:logs",
         "docker:logs": "docker logs -f frontend",
-        "deploy":
-            "yarn run docker:build && yarn run docker:clean && yarn run docker:run"
+        "deploy": "yarn run docker:build && yarn run docker:clean && yarn run docker:run"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "eslint": "^5.5.0",
+        "eslint-config-react-app": "^2.1.0",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-react": "^7.11.1",
         "express": "^4.16.2",
         "isomorphic-unfetch": "^2.0.0",
         "next": "latest",
+        "nprogress": "^0.2.0",
         "react": "^16.0.0"
     },
     "devDependencies": {
@@ -37,5 +41,6 @@
         "react-dom": "^16.2.0",
         "sass-loader": "^6.0.6",
         "webpack": "^3.10.0"
-    }
+    },
+    "eslintConfig": "./.eslintrc.json"
 }

@@ -2,19 +2,26 @@ import Layout from "../components/Layout.js";
 import React, { Component } from "react";
 import fetch from "isomorphic-unfetch";
 import Link from "next/link";
+import Router from 'next/router';
 import PageWrapper from "../components/PageWrapper.js";
 import Menu from "../components/Menu.js";
 import { Config } from "../config.js";
+import NProgress from "nprogress";
+
+import 'nprogress/nprogress.css';
 
 const headerImageStyle = {
     marginTop: 50,
     marginBottom: 50
 };
 
+Router.onRouteChangeStart = () => NProgress.start();
+Router.onRouteChangeComplete = () => NProgress.done();
+
 class Index extends Component {
     static async getInitialProps(context) {
         const pageRes = await fetch(
-            `${Config.apiUrl}/wp-json/postlight/v1/page?slug=welcome`
+            `${Config.apiUrl}/wp-json/postlight/v1/page?slug=home`
         );
         const page = await pageRes.json();
         const postsRes = await fetch(
@@ -29,6 +36,7 @@ class Index extends Component {
     }
 
     render() {
+        console.log(this.props);
         const posts = this.props.posts.map((post, index) => {
             return (
                 <ul key={index}>

@@ -20,7 +20,7 @@ class Menu extends Component {
       const menuItems = this.props.menu.items.map((item, index) => {
         if (item.object === "custom") {
             return (
-                <Link href={item.url} key={item.ID}>
+                <Link prefetch href={item.url} key={item.ID}>
                     <a style={linkStyle}>{item.title}</a>
                 </Link>
             );
@@ -29,6 +29,7 @@ class Menu extends Component {
         const actualPage = item.object === "category" ? "category" : "post";
         return (
             <Link
+                prefetch
                 as={`/${item.object}/${slug}`}
                 href={`/${actualPage}?slug=${slug}&apiRoute=${item.object}`}
                 key={item.ID}
