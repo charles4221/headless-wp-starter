@@ -569,10 +569,12 @@
             "error"
         ],
         "quote-props": [
-            "off"
+            "error",
+            "as-needed"
         ],
         "quotes": [
-            "off"
+            "error",
+            "single"
         ],
         "radix": [
             "off"
