@@ -192,7 +192,7 @@
             "error"
         ],
         "multiline-ternary": [
-            "error"
+            "warn"
         ],
         "new-cap": [
             "off"
@@ -201,10 +201,10 @@
             "error"
         ],
         "newline-after-var": [
-            "off"
+            "error"
         ],
         "newline-before-return": [
-            "off"
+            "error"
         ],
         "newline-per-chained-call": [
             "error"
