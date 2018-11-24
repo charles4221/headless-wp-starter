@@ -33,11 +33,11 @@ class Index extends Component {
 		);
 		const page = await pageRes.json();
 		const postsRes = await fetch(
-			`${Config.apiUrl}/wp-json/wp/v2/posts?_embed`
+			`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`
 		);
 		const posts = await postsRes.json();
 		const pagesRes = await fetch(
-			`${Config.apiUrl}/wp-json/wp/v2/pages?_embed`
+			`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/pages?content=false`
 		);
 		const pages = await pagesRes.json();
 
@@ -67,7 +67,7 @@ class Index extends Component {
 			<ul key={ index }>
 				<li>
 					<Link
-						as={ `/${page.slug}` }
+						as={ `/${page.parent ? `${page.parent}/${page.slug}` : page.slug}` }
 						href={ `/post?slug=${page.slug}&apiRoute=page` }
 					>
 						<a>{ page.title.rendered }</a>

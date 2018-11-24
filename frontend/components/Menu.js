@@ -8,14 +8,16 @@ const linkStyle = {
 
 class Menu extends Component {
 
-	constructor() {
-		super();
-	}
-
 	getSlug(url) {
 		const parts = url.split('/');
 
 		return parts.length > 2 ? parts[parts.length - 2] : '';
+	}
+
+	getPath(url) {
+		const parts = url.split(Config.apiUrl);
+
+		return parts.length > 1 ? `${parts[1]}` : '';
 	}
 
 	render() {
@@ -27,6 +29,7 @@ class Menu extends Component {
 					</Link>
 				);
 			}
+			const path = this.getPath(item.url);
 			const slug = this.getSlug(item.url);
 			const actualPage = item.object === 'category' ? 'category' : 'post';
 
@@ -34,7 +37,7 @@ class Menu extends Component {
 			return (
 				<Link
 					prefetch
-					as={ `/${slug}` }
+					as={ path }
 					href={ `/${actualPage}?slug=${slug}&apiRoute=${item.object}` }
 					key={ item.ID }
 				>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Config } from '../config.js';
 
 const PageWrapper = (Comp) =>
-	class extends React.Component {
+	class Wrap extends React.Component {
 
 		static async getInitialProps(args) {
 			const headerMenuRes = await fetch(

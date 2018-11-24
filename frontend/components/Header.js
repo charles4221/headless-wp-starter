@@ -7,10 +7,6 @@ import stylesheet from '../src/styles/style.scss'
 
 class Header extends Component {
 
-	constructor() {
-		super();
-	}
-
 	render() {
 
 		return (
