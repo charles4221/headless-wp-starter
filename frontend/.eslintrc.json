@@ -104,8 +104,7 @@
             "never"
         ],
         "func-style": [
-            "error",
-            "declaration"
+            "error"
         ],
         "generator-star-spacing": [
             "error"
@@ -152,7 +151,7 @@
             }
         ],
         "line-comment-position": [
-            "error"
+            "off"
         ],
         "linebreak-style": [
             "error",
@@ -192,7 +191,7 @@
             "error"
         ],
         "multiline-ternary": [
-            "error"
+            "off"
         ],
         "new-cap": [
             "off"
@@ -201,10 +200,10 @@
             "error"
         ],
         "newline-after-var": [
-            "off"
+            "error"
         ],
         "newline-before-return": [
-            "off"
+            "error"
         ],
         "newline-per-chained-call": [
             "error"
@@ -584,7 +583,10 @@
             {
                 "ignoreTranspilerName": false
             }
-        ],
+		],
+		"react/react-in-jsx-scope": [
+			"off"
+		],
         "require-await": [
             "error"
         ],
