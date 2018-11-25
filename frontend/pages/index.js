@@ -2,27 +2,13 @@ import Layout from '../components/Layout.js';
 import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch';
 import Link from 'next/link';
-import Router from 'next/router';
 import PageWrapper from '../components/PageWrapper.js';
 import Menu from '../components/Menu.js';
 import { Config } from '../config.js';
-import NProgress from 'nprogress';
 
 const headerImageStyle = {
 	marginTop: 50,
 	marginBottom: 50
-};
-
-Router.onRouteChangeStart = () => {
-	NProgress.start();
-};
-
-Router.onRouteChangeComplete = () => {
-	NProgress.done();
-};
-
-Router.onRouteChangeError = () => {
-	NProgress.done();
 };
 
 class Index extends Component {

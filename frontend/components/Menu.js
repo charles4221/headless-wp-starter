@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
+import Router from 'next/router';
 import { Config } from '../config.js';
+import NProgress from 'nprogress';
+
+Router.onRouteChangeStart = () => {
+	NProgress.start();
+};
+
+Router.onRouteChangeComplete = () => {
+	NProgress.done();
+};
+
+Router.onRouteChangeError = () => {
+	NProgress.done();
+};
 
 const linkStyle = {
 	marginRight: 15
@@ -29,9 +43,9 @@ class Menu extends Component {
 					</Link>
 				);
 			}
+			const actualPage = item.object === 'category' ? 'category' : 'post';
 			const path = this.getPath(item.url);
 			const slug = this.getSlug(item.url);
-			const actualPage = item.object === 'category' ? 'category' : 'post';
 
 
 			return (
