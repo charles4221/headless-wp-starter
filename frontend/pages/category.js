@@ -1,16 +1,15 @@
-import Layout from '../components/Layout.js';
 import React, { Component } from 'react';
 import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
 import Error from 'next/error';
-import PageWrapper from '../components/PageWrapper.js';
-import Menu from '../components/Menu.js';
-import { Config } from '../config.js';
+import fetch from 'isomorphic-unfetch';
+import Layout from '../components/Layout';
+import PageWrapper from '../components/PageWrapper';
+import Config from '../config';
 
 class Category extends Component {
 
 	static async getInitialProps(context) {
-		const { slug } = context.query;
+		const { slug, menu } = context.query;
 		const categoriesRes = await fetch(
 			`${Config.apiUrl}/wp-json/wp/v2/categories?slug=${slug}`
 		);
@@ -26,6 +25,7 @@ class Category extends Component {
 
 
 			return {
+				menu,
 				categories,
 				posts
 			};
@@ -53,8 +53,7 @@ class Category extends Component {
 
 
 		return (
-			<Layout>
-				<Menu menu={ this.props.headerMenu } />
+			<Layout menu={ this.props.menu }>
 				<h1>{ this.props.categories[0].name } Posts</h1>
 				{ posts }
 			</Layout>

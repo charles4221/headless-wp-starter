@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
-import { Config } from '../config.js';
 import NProgress from 'nprogress';
+import PageWrapper from './PageWrapper';
+import { menuPropTypes } from '../utils/types.spec';
+import Config from '../config';
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
@@ -22,6 +24,18 @@ const linkStyle = {
 
 class Menu extends Component {
 
+	static propTypes = {
+		menu: menuPropTypes
+	}
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			menu: props.menu
+		}
+	}
+
 	getSlug(url) {
 		const parts = url.split('/');
 
@@ -35,38 +49,39 @@ class Menu extends Component {
 	}
 
 	render() {
-		const menuItems = this.props.menu.items.map((item, index) => {
-			if (item.object === 'custom') {
+		const { menu } = this.state;
+		let menuItems = [];
+
+		if (menu && menu.items) {
+			menuItems = menu.items.map((item, index) => {
+				if (item.object === 'custom') {
+					return (
+						<Link prefetch href={ item.url } key={ item.ID }>
+							<a style={ linkStyle }>{ item.title }</a>
+						</Link>
+					);
+				}
+
+				const actualPage = item.object === 'category' ? 'category' : 'post';
+				const path = this.getPath(item.url);
+				const slug = this.getSlug(item.url);
+
 				return (
-					<Link prefetch href={ item.url } key={ item.ID }>
+					<Link
+						prefetch
+						as={ path }
+						href={ `/${actualPage}?id=${item.object_id}&slug=${slug}&apiRoute=${item.object}&menu=${encodeURIComponent(JSON.stringify(menu))}` }
+						key={ item.ID }
+					>
 						<a style={ linkStyle }>{ item.title }</a>
 					</Link>
 				);
-			}
-			const actualPage = item.object === 'category' ? 'category' : 'post';
-			const path = this.getPath(item.url);
-			const slug = this.getSlug(item.url);
-
-
-			return (
-				<Link
-					prefetch
-					as={ path }
-					href={ `/${actualPage}?slug=${slug}&apiRoute=${item.object}` }
-					key={ item.ID }
-				>
-					<a style={ linkStyle }>{ item.title }</a>
-				</Link>
-			);
-		});
-
+			});
+		}
 
 		return (
 			<div>
-				<Link href="/">
-					<a style={ linkStyle }>Home</a>
-				</Link>
-				{ menuItems }
+				{ menu && menuItems }
 			</div>
 		)
 	}
@@ -74,4 +89,4 @@ class Menu extends Component {
 
 }
 
-export default Menu;
+export default PageWrapper(Menu);

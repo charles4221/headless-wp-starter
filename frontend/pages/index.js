@@ -1,10 +1,9 @@
-import Layout from '../components/Layout.js';
 import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch';
 import Link from 'next/link';
-import PageWrapper from '../components/PageWrapper.js';
-import Menu from '../components/Menu.js';
-import { Config } from '../config.js';
+import Layout from '../components/Layout';
+import PageWrapper from '../components/PageWrapper';
+import Config from '../config';
 
 const headerImageStyle = {
 	marginTop: 50,
@@ -14,6 +13,7 @@ const headerImageStyle = {
 class Index extends Component {
 
 	static async getInitialProps(context) {
+		const { menu } = context.query;
 		const pageRes = await fetch(
 			`${Config.apiUrl}/wp-json/postlight/v1/page?slug=home`
 		);
@@ -27,8 +27,8 @@ class Index extends Component {
 		);
 		const pages = await pagesRes.json();
 
-
 		return {
+			menu,
 			page,
 			posts,
 			pages
@@ -36,7 +36,6 @@ class Index extends Component {
 	}
 
 	render() {
-		console.log(this.props);
 		const posts = this.props.posts.map((post, index) =>
 			<ul key={ index }>
 				<li>
@@ -49,6 +48,7 @@ class Index extends Component {
 				</li>
 			</ul>
 		);
+
 		const pages = this.props.pages.map((page, index) =>
 			<ul key={ index }>
 				<li>
@@ -63,9 +63,9 @@ class Index extends Component {
 		);
 
 		return (
-			<Layout>
-				<Menu menu={ this.props.headerMenu } />
+			<Layout menu={ this.props.menu }>
 				<img
+					alt=""
 					src="/static/images/wordpress-plus-react-header.png"
 					width="815"
 					style={ headerImageStyle }

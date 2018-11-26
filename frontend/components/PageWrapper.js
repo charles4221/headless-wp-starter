@@ -1,18 +1,10 @@
-import React from 'react';
-import { Config } from '../config.js';
+import React, { Component } from 'react';
 
 const PageWrapper = (Comp) =>
-	class Wrap extends React.Component {
+	class Wrap extends Component {
 
 		static async getInitialProps(args) {
-			const headerMenuRes = await fetch(
-				`${Config.apiUrl}/wp-json/menus/v1/menus/header-menu`
-			);
-			const headerMenu = await headerMenuRes.json();
-
-
 			return {
-				headerMenu,
 				...Comp.getInitialProps ? await Comp.getInitialProps(args) : null
 			};
 		}
@@ -24,6 +16,5 @@ const PageWrapper = (Comp) =>
 		}
 
 	}
-
 
 export default PageWrapper;

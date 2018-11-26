@@ -9,7 +9,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const Config = { apiUrl: 'https://react.harwooddigital.com.au' };
+const Config = require('./config');
 
 const getPath = (url) => {
 	const parts = url.split(Config.apiUrl);
@@ -22,7 +22,13 @@ app
 	.then(async () => {
 		const server = express();
 
+		// Asynchronously fetch initial data we need to render the application.
+
 		const getServerData = async () => {
+			const menuRes = await fetch(
+				`${Config.apiUrl}/wp-json/menus/v1/menus/header-menu`
+			);
+			const menu = await menuRes.json();
 			const postsRes = await fetch(
 				`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`
 			);
@@ -33,6 +39,7 @@ app
 			const pages = await pagesRes.json();
 
 			return {
+				menu,
 				posts,
 				pages
 			};
@@ -46,8 +53,10 @@ app
 			server.get(getPath(post.permalink), (req, res) => {
 				const actualPage = '/post';
 				const queryParams = {
+					id: post.id,
 					slug: post.slug,
-					apiRoute: 'post'
+					apiRoute: 'post',
+					menu: serverData.menu
 				}
 
 				app.render(req, res, actualPage, queryParams);
@@ -58,51 +67,37 @@ app
 			server.get(getPath(page.permalink), (req, res) => {
 				const actualPage = '/post';
 				const queryParams = {
+					id: page.id,
 					slug: page.slug,
-					apiRoute: 'page'
+					apiRoute: 'page',
+					menu: serverData.menu
 				}
 
 				app.render(req, res, actualPage, queryParams);
 			})
 		});
 
-		// Default fallbacks.
-
-		server.get('/post/:slug', (req, res) => {
-			const actualPage = '/post';
-			const queryParams = {
-				slug: req.params.slug,
-				apiRoute: 'post'
-			};
-
-			app.render(req, res, actualPage, queryParams);
-		});
-
-		server.get('/page/:slug', (req, res) => {
-			console.log(req.params);
-
-			const actualPage = '/post';
-			const queryParams = {
-				slug: req.params.slug,
-				apiRoute: 'page'
-			};
-
-			app.render(req, res, actualPage, queryParams);
-		});
+		// Category taxonomy indexes.
 
 		server.get('/category/:slug', (req, res) => {
 			const actualPage = '/category';
-			const queryParams = { slug: req.params.slug };
+			const queryParams = {
+				slug: req.params.slug,
+				menu: serverData.menu
+			};
 
 			app.render(req, res, actualPage, queryParams);
 		});
 
-		// Preview links.
+		// Preview links from WP Admin.
 
 		server.get('/_preview/:id/:wpnonce', (req, res) => {
 			const actualPage = '/preview';
-			const queryParams = { id: req.params.id,
-				wpnonce: req.params.wpnonce };
+			const queryParams = {
+				id: req.params.id,
+				wpnonce: req.params.wpnonce,
+				menu: serverData.menu
+			};
 
 			app.render(req, res, actualPage, queryParams);
 		});

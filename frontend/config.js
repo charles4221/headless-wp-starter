@@ -1,1 +1,3 @@
-export const Config = { apiUrl: 'https://react.harwooddigital.com.au' }
+const Config = { apiUrl: 'https://react.harwooddigital.com.au' }
+
+module.exports = Config;

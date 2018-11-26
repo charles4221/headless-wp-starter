@@ -1,10 +1,9 @@
-import Layout from '../components/Layout.js';
 import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch';
 import Error from 'next/error';
-import PageWrapper from '../components/PageWrapper.js';
-import Menu from '../components/Menu.js';
-import { Config } from '../config.js';
+import Layout from '../components/Layout';
+import PageWrapper from '../components/PageWrapper';
+import Config from '../config';
 
 class Preview extends Component {
 
@@ -16,12 +15,10 @@ class Preview extends Component {
 	}
 
 	componentDidMount() {
-		const { id, wpnonce } = this.props.url.query;
+		const { id, wpnonce, menu } = this.props.url.query;
 
 		fetch(
-			`${
-				Config.apiUrl
-			}/wp-json/postlight/v1/post/preview?id=${id}&_wpnonce=${wpnonce}`,
+			`${Config.apiUrl}/wp-json/postlight/v1/post/preview?id=${id}&_wpnonce=${wpnonce}`,
 			{ credentials: 'include' } // required for cookie nonce auth
 		)
 			.then((res) => res.json())
@@ -42,8 +39,7 @@ class Preview extends Component {
 		}
 
 		return (
-			<Layout>
-				<Menu menu={ this.props.headerMenu } />
+			<Layout menu={ this.props.menu }>
 				<h1>{ this.state.post ? this.state.post.title.rendered : '' }</h1>
 				<div
 					dangerouslySetInnerHTML={ {
