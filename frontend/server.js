@@ -3,45 +3,89 @@
 
 const express = require('express');
 const next = require('next');
-const fetch = require('isomorphic-unfetch');
+// const axios = require('axios');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
-
 const Config = require('./config');
+const { api } = require('./utils/Helpers');
 
+/**
+ * Get the `pathname` from a url from our WP server.
+ *
+ * @param {String} url The full url to split.
+ * @returns {String} The `pathname`.
+ */
 const getPath = (url) => {
 	const parts = url.split(Config.apiUrl);
 
 	return parts.length > 1 ? `${parts[1]}` : '';
 }
 
+// /**
+//  * Method for getting data from the passed endpoint URL.
+//  *
+//  * @param   {String} endpoint The endpoint URL string to call.
+//  * @returns {Promise} A Promise resolution or rejection.
+//  */
+// const api = (endpoint) => new Promise((resolve, reject) => {
+// 	axios.get(endpoint)
+// 		.then((response) => resolve(response.data))
+// 		.catch((error) => reject(error));
+// })
+
+// WP API endpoint for getting the WP global settings (e.g. sitename, description, timezone).
+const settingsEndpoint = `${Config.apiUrl}/wp-json/`
+// WP API endpoint for getting the menu.
+const menuEndpoint = `${Config.apiUrl}/wp-json/menus/v1/menus/header-menu`;
+// WP API endpoint for getting the array of posts.
+const postsEndpoint = `${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`;
+// WP API endpoint for getting the array of pages.
+const pagesEndpoint = `${Config.apiUrl}/wp-json/better-rest-endpoints/v1/pages?content=false`
+// WP API endpoint for getting the ACF Options.
+const optionsEndpoint = `${Config.apiUrl}/wp-json/acf/v3/options/headless-settings`
+
+/**
+ * Prepare and build our Next App and Express Server.
+ */
 app
 	.prepare()
 	.then(async () => {
 		const server = express();
 
 		// Asynchronously fetch initial data we need to render the application.
-
+		// Fetching data at this point acts as a cache, in that it is only requested once
+		// when the server is started, and cached within the `serverData` constant below.
+		// My idea is to add a custom action into the WP `save_post` hook which triggers
+		// the Node server to reload, therefore refreshing the cached data below - CH.
 		const getServerData = async () => {
-			const menuRes = await fetch(
-				`${Config.apiUrl}/wp-json/menus/v1/menus/header-menu`
-			);
-			const menu = await menuRes.json();
-			const postsRes = await fetch(
-				`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`
-			);
-			const posts = await postsRes.json();
-			const pagesRes = await fetch(
-				`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/pages?content=false`
-			);
-			const pages = await pagesRes.json();
+			console.log('Node Server getting WP API data...');
+
+			const globalSettings = await api(settingsEndpoint).then((response) => response);
+			const menu = await api(menuEndpoint).then((response) => response);
+			const posts = await api(postsEndpoint).then((response) => response);
+			const pages = await api(pagesEndpoint).then((response) => response);
+			const options = await api(optionsEndpoint).then((response) => response);
+
+			const { name, description, url, home, gmt_offset, timezone_string } = globalSettings; // eslint-disable-line camelcase
+			const settings = {
+				name,
+				description,
+				url,
+				home,
+				gmtOffset: gmt_offset, // eslint-disable-line camelcase
+				timezone: timezone_string // eslint-disable-line camelcase
+			};
+
+			console.log('Node Server finished getting WP API data!');
 
 			return {
+				settings,
 				menu,
 				posts,
-				pages
+				pages,
+				options
 			};
 		}
 
@@ -49,33 +93,37 @@ app
 
 		// Explicitly create server routes for each post and page from the API.
 
-		serverData.posts.forEach((post) => {
+		await serverData.posts.forEach((post) =>
 			server.get(getPath(post.permalink), (req, res) => {
 				const actualPage = '/post';
 				const queryParams = {
 					id: post.id,
 					slug: post.slug,
 					apiRoute: 'post',
-					menu: serverData.menu
+					menu: serverData.menu,
+					settings: serverData.settings,
+					options: serverData.options.acf
 				}
 
 				app.render(req, res, actualPage, queryParams);
 			})
-		})
+		);
 
-		serverData.pages.forEach((page) => {
+		await serverData.pages.forEach((page) =>
 			server.get(getPath(page.permalink), (req, res) => {
 				const actualPage = '/post';
 				const queryParams = {
 					id: page.id,
 					slug: page.slug,
 					apiRoute: 'page',
-					menu: serverData.menu
+					menu: serverData.menu,
+					settings: serverData.settings,
+					options: serverData.options.acf
 				}
 
 				app.render(req, res, actualPage, queryParams);
 			})
-		});
+		);
 
 		// Category taxonomy indexes.
 
@@ -83,7 +131,9 @@ app
 			const actualPage = '/category';
 			const queryParams = {
 				slug: req.params.slug,
-				menu: serverData.menu
+				menu: serverData.menu,
+				settings: serverData.settings,
+				options: serverData.options.acf
 			};
 
 			app.render(req, res, actualPage, queryParams);
@@ -96,7 +146,9 @@ app
 			const queryParams = {
 				id: req.params.id,
 				wpnonce: req.params.wpnonce,
-				menu: serverData.menu
+				menu: serverData.menu,
+				settings: serverData.settings,
+				options: serverData.options.acf
 			};
 
 			app.render(req, res, actualPage, queryParams);
