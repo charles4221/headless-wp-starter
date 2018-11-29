@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "next build",
-        "dev": "node server.js",
+        "dev": "NODE_ENV=development node server.js",
         "start": "NODE_ENV=production node server.js",
         "docker:build": "docker build -t frontend .",
         "docker:clean": "docker rm -f frontend || true",
@@ -19,6 +19,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "axios": "^0.18.0",
         "babel-eslint": "^10.0.1",
         "eslint": "^5.5.0",
         "eslint-config-react-app": "^2.1.0",
@@ -27,8 +28,7 @@
         "eslint-plugin-jsx-a11y": "^6.1.2",
         "eslint-plugin-react": "^7.11.1",
         "express": "^4.16.2",
-        "isomorphic-unfetch": "^2.0.0",
-        "next": "latest",
+        "next": "^7.0.2",
         "nprogress": "^0.2.0",
         "prop-types": "^15.6.2",
         "react": "^16.0.0"
