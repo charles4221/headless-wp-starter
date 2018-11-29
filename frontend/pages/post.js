@@ -1,46 +1,37 @@
 import React, { Component, Fragment } from 'react';
-import fetch from 'isomorphic-unfetch';
 import Head from 'next/head';
 import Error from 'next/error';
 import Layout from '../components/Layout';
 import PageWrapper from '../components/PageWrapper';
 import { menuPropTypes, postPropTypes } from '../utils/types.spec';
 import Config from '../config';
+import Yoast from '../utils/Yoast';
+import { api } from '../utils/Helpers';
 
 class Post extends Component {
 
 	static propTypes = {
-		post: postPropTypes,
+		post: postPropTypes.isRequired,
 		menu: menuPropTypes
 	}
 
 	static async getInitialProps(context) {
-		const { id, slug, apiRoute } = context.query;
-		let { menu } = context.query;
+		const { id, slug, apiRoute, menu, settings, options } = context.query;
+		const endpoint = `${Config.apiUrl}/wp-json/better-rest-endpoints/v1/${apiRoute}/${apiRoute === 'page' ? id : slug}`;
 
-		const res = await fetch(
-			`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/${apiRoute}/${apiRoute === 'page' ? id : slug}`
-		);
-		const post = await res.json();
-
-		menu = typeof menu === 'string'
-			? JSON.parse(menu)
-			: menu;
+		const post = await api(endpoint).then((response) => response);
 
 		return {
+			settings,
 			menu,
-			post
+			post,
+			options
 		};
 	}
 
-	buildYoastSEOHead(yoast) {
+	buildYoastSEOHead(post, settings) {
 		return (
-			<Head>
-				<title>{ yoast.yoast_wpseo_title }</title>
-				{ yoast.yoast_wpseo_metadesc &&
-					<meta name="description" content={ yoast.yoast_wpseo_metadesc } />
-				}
-			</Head>
+			<Yoast { ...post } settings={ settings } />
 		)
 	}
 
@@ -55,7 +46,14 @@ class Post extends Component {
 	renderACFLayout(data) {
 		console.log(data);
 
-		return <div>{'This page has ACF data — but we haven\'t built out any ACF components yet!'}</div>
+		return (
+			<div>
+				<p>{'This page has ACF data — but we haven\'t built out any ACF components yet! The data has been logged to console for reference.'}</p>
+				<code>
+					{ JSON.stringify(data) }
+				</code>
+			</div>
+		)
 	}
 
 	renderDefaultLayout(title, content) {
@@ -79,15 +77,15 @@ class Post extends Component {
 		}
 
 		return (
-			<Layout menu={ this.props.menu }>
+			<Layout { ...this.props }>
 				{
 					yoast
-						? this.buildYoastSEOHead(yoast)
+						? this.buildYoastSEOHead(this.props.post, this.props.settings)
 						: this.buildDefaultSEOHead(title)
 				}
 				{
-					acf && acf.flexible_layout
-						? this.renderACFLayout(acf.flexible_layout)
+					acf && acf.layout
+						? this.renderACFLayout(acf.layout)
 						: this.renderDefaultLayout(title, content)
 				}
 			</Layout>

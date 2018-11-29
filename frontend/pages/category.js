@@ -1,30 +1,31 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
 import Error from 'next/error';
-import fetch from 'isomorphic-unfetch';
 import Layout from '../components/Layout';
 import PageWrapper from '../components/PageWrapper';
+import { menuPropTypes } from '../utils/types.spec';
 import Config from '../config';
+import { api } from '../utils/Helpers';
 
 class Category extends Component {
 
+	static propTypes = {
+		menu: menuPropTypes
+	}
+
 	static async getInitialProps(context) {
-		const { slug, menu } = context.query;
-		const categoriesRes = await fetch(
-			`${Config.apiUrl}/wp-json/wp/v2/categories?slug=${slug}`
-		);
-		const categories = await categoriesRes.json();
+		const { slug, menu, settings } = context.query;
+		const categoriesEndpoint = `${Config.apiUrl}/wp-json/wp/v2/categories?slug=${slug}`;
+		const categories = await api(categoriesEndpoint).then((response) => response);
 
 		if (categories.length > 0) {
-			const postsRes = await fetch(
-				`${Config.apiUrl}/wp-json/wp/v2/posts?_embed&categories=${
-					categories[0].id
-				}`
-			);
-			const posts = await postsRes.json();
-
+			const postsEndpoint = `${Config.apiUrl}/wp-json/wp/v2/posts?_embed&categories=${
+				categories[0].id
+			}`;
+			const posts = await api(postsEndpoint).then((response) => response);
 
 			return {
+				settings,
 				menu,
 				categories,
 				posts

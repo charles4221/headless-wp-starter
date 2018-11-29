@@ -15,7 +15,7 @@ class Preview extends Component {
 	}
 
 	componentDidMount() {
-		const { id, wpnonce, menu } = this.props.url.query;
+		const { id, wpnonce, menu, settings } = this.props.url.query;
 
 		fetch(
 			`${Config.apiUrl}/wp-json/postlight/v1/post/preview?id=${id}&_wpnonce=${wpnonce}`,

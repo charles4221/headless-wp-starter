@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import NProgress from 'nprogress';
-import PageWrapper from './PageWrapper';
 import { menuPropTypes } from '../utils/types.spec';
 import Config from '../config';
 
@@ -28,14 +27,6 @@ class Menu extends Component {
 		menu: menuPropTypes
 	}
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			menu: props.menu
-		}
-	}
-
 	getSlug(url) {
 		const parts = url.split('/');
 
@@ -45,20 +36,18 @@ class Menu extends Component {
 	getPath(url) {
 		const parts = url.split(Config.apiUrl);
 
-		return parts.length > 1 ? `${parts[1]}` : '';
+		return parts.length > 1 ? parts[1] : '';
 	}
 
 	render() {
-		const { menu } = this.state;
+		const { menu } = this.props;
 		let menuItems = [];
 
 		if (menu && menu.items) {
 			menuItems = menu.items.map((item, index) => {
 				if (item.object === 'custom') {
 					return (
-						<Link prefetch href={ item.url } key={ item.ID }>
-							<a style={ linkStyle }>{ item.title }</a>
-						</Link>
+						<a href={ item.url } key={ item.ID } style={ linkStyle }>{ item.title }</a>
 					);
 				}
 
@@ -70,7 +59,7 @@ class Menu extends Component {
 					<Link
 						prefetch
 						as={ path }
-						href={ `/${actualPage}?id=${item.object_id}&slug=${slug}&apiRoute=${item.object}&menu=${encodeURIComponent(JSON.stringify(menu))}` }
+						href={ `/${actualPage}?id=${item.object_id}&slug=${slug}&apiRoute=${item.object}` }
 						key={ item.ID }
 					>
 						<a style={ linkStyle }>{ item.title }</a>
@@ -80,13 +69,13 @@ class Menu extends Component {
 		}
 
 		return (
-			<div>
+			<nav>
 				{ menu && menuItems }
-			</div>
+			</nav>
 		)
 	}
 
 
 }
 
-export default PageWrapper(Menu);
+export default Menu;

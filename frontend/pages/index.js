@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import fetch from 'isomorphic-unfetch';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import PageWrapper from '../components/PageWrapper';
 import Config from '../config';
+import { api } from '../utils/Helpers';
 
 const headerImageStyle = {
 	marginTop: 50,
@@ -13,25 +13,21 @@ const headerImageStyle = {
 class Index extends Component {
 
 	static async getInitialProps(context) {
-		const { menu } = context.query;
-		const pageRes = await fetch(
-			`${Config.apiUrl}/wp-json/postlight/v1/page?slug=home`
-		);
-		const page = await pageRes.json();
-		const postsRes = await fetch(
-			`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`
-		);
-		const posts = await postsRes.json();
-		const pagesRes = await fetch(
-			`${Config.apiUrl}/wp-json/better-rest-endpoints/v1/pages?content=false`
-		);
-		const pages = await pagesRes.json();
+		const { menu, settings, options } = context.query;
+		const pageEndpoint = `${Config.apiUrl}/wp-json/postlight/v1/page?slug=home`;
+		const postsEndpoint = `${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`;
+		const pagesEndpoint = `${Config.apiUrl}/wp-json/better-rest-endpoints/v1/pages?content=false`;
+		const page = await api(pageEndpoint).then((response) => response);
+		const posts = await api(postsEndpoint).then((response) => response);
+		const pages = await api(pagesEndpoint).then((response) => response);
 
 		return {
+			settings,
 			menu,
 			page,
 			posts,
-			pages
+			pages,
+			options
 		};
 	}
 
