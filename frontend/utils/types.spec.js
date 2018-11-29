@@ -1,12 +1,17 @@
+/* eslint-disable camelcase */
 import PropTypes from 'prop-types';
 
+/**
+ * Static types for all React.Component children.
+ */
 export const childComponentTypes = PropTypes.oneOfType([
 	PropTypes.element,
 	PropTypes.arrayOf(PropTypes.element)
 ]);
 
-/* eslint-disable camelcase */
-
+/**
+ * Static types for `/wp-json/menus/v1/` REST endpoint.
+ */
 export const menuPropTypes = PropTypes.exact({
 	count: PropTypes.number,
 	description: PropTypes.string,
@@ -59,17 +64,42 @@ export const menuPropTypes = PropTypes.exact({
 	term_group: PropTypes.number,
 	term_id: PropTypes.number,
 	term_taxonomy_id: PropTypes.number
-}).isRequired;
+});
 
+export const yoastPropTypes = PropTypes.exact({
+	yoast_wpseo_focuskw: PropTypes.string,
+	yoast_wpseo_title: PropTypes.string,
+	yoast_wpseo_metadesc: PropTypes.string,
+	yoast_wpseo_linkdex: PropTypes.string,
+	yoast_wpseo_metakeywords: PropTypes.string,
+	'yoast_wpseo_meta-robots-noindex': PropTypes.string,
+	'yoast_wpseo_meta-robots-nofollow': PropTypes.string,
+	'yoast_wpseo_meta-robots-adv': PropTypes.string,
+	yoast_wpseo_canonical: PropTypes.string,
+	yoast_wpseo_redirect: PropTypes.string,
+	'yoast_wpseo_opengraph-title': PropTypes.string,
+	'yoast_wpseo_opengraph-description': PropTypes.string,
+	'yoast_wpseo_opengraph-image': PropTypes.string,
+	'yoast_wpseo_twitter-title': PropTypes.string,
+	'yoast_wpseo_twitter-description': PropTypes.string,
+	'yoast_wpseo_twitter-image': PropTypes.string
+});
+
+/**
+ * Static types for `/wp-json/better-rest-endpoints/v1/post/{slug|id}` REST endpoint.
+ */
 export const postPropTypes = PropTypes.shape({
-	acf: PropTypes.shape({
-		flexible_layout: PropTypes.oneOfType([
-			PropTypes.bool,
-			PropTypes.arrayOf(PropTypes.shape({
-				acf_fc_layout: PropTypes.string
-			}))
-		])
-	}),
+	acf: PropTypes.oneOfType([
+		PropTypes.bool,
+		PropTypes.shape({
+			layout: PropTypes.oneOfType([
+				PropTypes.bool,
+				PropTypes.arrayOf(PropTypes.shape({
+					acf_fc_layout: PropTypes.string
+				}))
+			])
+		})
+	]),
 	author: PropTypes.string,
 	author_id: PropTypes.number,
 	author_nicename: PropTypes.string,
@@ -93,5 +123,12 @@ export const postPropTypes = PropTypes.shape({
 	tag_names: PropTypes.arrayOf(PropTypes.string),
 	template: PropTypes.string,
 	title: PropTypes.string.isRequired,
-	yoast: PropTypes.object
-}).isRequired;
+	yoast: yoastPropTypes.isRequired
+});
+
+/**
+ * Static types for `/wp-json/acf/v2/options` REST endpoint.
+ */
+export const optionsPropTypes = PropTypes.shape({
+	footerCopyright: PropTypes.string.isRequired
+})
