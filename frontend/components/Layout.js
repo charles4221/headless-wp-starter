@@ -1,7 +1,7 @@
-import { menuPropTypes, childComponentTypes } from '../utils/types.spec';
-import Header from './Header';
+import { menuPropTypes, childComponentTypes, optionsPropTypes } from '../utils/types.spec';
 import Menu from './Menu';
 import Footer from './Footer';
+import DocumentHead from '../utils/Head';
 
 const layoutStyle = {
 	margin: 20,
@@ -10,16 +10,19 @@ const layoutStyle = {
 
 const Layout = (props) =>
 	<div style={ layoutStyle }>
-		<Header />
+		<DocumentHead />
 		<Menu menu={ props.menu } />
 		{ props.children }
-		<Footer />
+		{ props.options &&
+			<Footer copyright={ props.options.footerCopyright } />
+		}
 	</div>
 
 ;
 
 Layout.propTypes = {
 	menu: menuPropTypes,
+	options: optionsPropTypes,
 	children: childComponentTypes
 }
 

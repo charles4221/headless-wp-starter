@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Head from 'next/head';
 import stylesheet from '../src/styles/style.scss'
 
-class Header extends Component {
+class DocumentHead extends Component {
 
 	render() {
 
@@ -21,4 +21,4 @@ class Header extends Component {
 
 }
 
-export default Header;
+export default DocumentHead;
