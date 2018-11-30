@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Head from 'next/head';
 import Error from 'next/error';
 import Layout from '../components/Layout';
@@ -58,14 +58,14 @@ class Post extends Component {
 
 	renderDefaultLayout(title, content) {
 		return (
-			<Fragment>
+			<>
 				<h1>{ title }</h1>
 				<div
 					dangerouslySetInnerHTML={ {
 						__html: content
 					} }
 				/>
-			</Fragment>
+			</>
 		)
 	}
 

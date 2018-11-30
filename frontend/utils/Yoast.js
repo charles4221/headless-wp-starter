@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Head from 'next/head';
 import { postPropTypes } from '../utils/types.spec';
 
@@ -12,7 +12,7 @@ class Yoast extends Component {
 		const { settings, yoast } = this.props;
 
 		return (
-			<Fragment>
+			<>
 				{/* TODO: set the actual locale - CH */}
 				<meta property="og:locale" content="en_US" />
 				<meta property="og:type" content="article" />
@@ -31,12 +31,12 @@ class Yoast extends Component {
 					<meta property="og:site_name" content={ settings.name } />
 				}
 				{ yoast['yoast_wpseo_opengraph-image'] &&
-					<Fragment>
+					<>
 						<meta property="og:image" content={ yoast['yoast_wpseo_opengraph-image'] } />
 						<meta property="og:image:secure_url" content={ yoast['yoast_wpseo_opengraph-image'].replace('http://', 'https://') } />
-					</Fragment>
+					</>
 				}
-			</Fragment>
+			</>
 		)
 	}
 
@@ -44,12 +44,12 @@ class Yoast extends Component {
 		const { yoast } = this.props;
 
 		return (
-			<Fragment>
+			<>
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:title" content={ yoast['yoast_wpseo_twitter-title'] } />
 				<meta name="twitter:description" content={ yoast['yoast_wpseo_twitter-description'] } />
 				<meta name="twitter:image" content={ yoast['yoast_wpseo_twitter-image'] } />
-			</Fragment>
+			</>
 		)
 	}
 
