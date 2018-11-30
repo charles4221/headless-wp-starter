@@ -13,6 +13,7 @@ class Yoast extends Component {
 
 		return (
 			<Fragment>
+				{/* TODO: set the actual locale - CH */}
 				<meta property="og:locale" content="en_US" />
 				<meta property="og:type" content="article" />
 				{ yoast['yoast_wpseo_opengraph-title'] &&
@@ -76,16 +77,18 @@ class Yoast extends Component {
 				{ yoast['yoast_wpseo_opengraph-title'] &&
 					this.renderOpenGraph()
 				}
+				{ yoast['yoast_wpseo_twitter-title'] &&
+					this.renderTwitterCard()
+				}
 				{ this.props.categoryNames && this.props.categoryNames.length > 0 &&
 					<meta property="article:section" content={ this.props.categoryNames[0] } />
 				}
 				{ this.props.date &&
 					<meta property="article:published_time" content={ this.props.date } />
 				}
-				{ yoast['yoast_wpseo_twitter-title'] &&
-					this.renderTwitterCard()
+				{ this.props.date_modified &&
+					<meta property="article:modified_time" content={ this.props.date_modified } />
 				}
-				<meta property="article:modified_time" content="2018-11-27T02:32:47+00:00" />
 				{ yoast.yoast_wpseo_metakeywords &&
 					<meta name="keywords" content={ yoast.yoast_wpseo_metakeywords } />
 				}

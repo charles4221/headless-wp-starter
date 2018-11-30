@@ -3,13 +3,12 @@
 
 const express = require('express');
 const next = require('next');
-// const axios = require('axios');
+const Config = require('./config');
+const { api } = require('./utils/Helpers');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
-const Config = require('./config');
-const { api } = require('./utils/Helpers');
 
 /**
  * Get the `pathname` from a url from our WP server.
@@ -22,18 +21,6 @@ const getPath = (url) => {
 
 	return parts.length > 1 ? `${parts[1]}` : '';
 }
-
-// /**
-//  * Method for getting data from the passed endpoint URL.
-//  *
-//  * @param   {String} endpoint The endpoint URL string to call.
-//  * @returns {Promise} A Promise resolution or rejection.
-//  */
-// const api = (endpoint) => new Promise((resolve, reject) => {
-// 	axios.get(endpoint)
-// 		.then((response) => resolve(response.data))
-// 		.catch((error) => reject(error));
-// })
 
 // WP API endpoint for getting the WP global settings (e.g. sitename, description, timezone).
 const settingsEndpoint = `${Config.apiUrl}/wp-json/`
@@ -68,14 +55,12 @@ app
 			const pages = await api(pagesEndpoint).then((response) => response);
 			const options = await api(optionsEndpoint).then((response) => response);
 
-			const { name, description, url, home, gmt_offset, timezone_string } = globalSettings; // eslint-disable-line camelcase
+			const { name, description, url, home } = globalSettings; // eslint-disable-line camelcase
 			const settings = {
 				name,
 				description,
 				url,
-				home,
-				gmtOffset: gmt_offset, // eslint-disable-line camelcase
-				timezone: timezone_string // eslint-disable-line camelcase
+				home
 			};
 
 			console.log('Node Server finished getting WP API data!');

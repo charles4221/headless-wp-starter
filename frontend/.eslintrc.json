@@ -504,7 +504,7 @@
             "error"
         ],
         "no-warning-comments": [
-            "error"
+            "warn"
         ],
         "no-whitespace-before-property": [
             "error"
