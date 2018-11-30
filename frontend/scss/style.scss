@@ -1,0 +1,19 @@
+@import 'config/variables';
+$theme-font: 100% verdana, sans-serif;
+
+body {
+	font: $theme-font;
+	background-color: $cl__light;
+
+	h1,
+	h2 {
+		color: $cl__dark;
+	}
+
+	.autoprefixer-test {
+		transition: all 0.3s ease;
+		transform: scale(1);
+	}
+}
+
+@import '../../node_modules/nprogress/nprogress.css';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Head from 'next/head';
-import stylesheet from '../src/styles/style.scss'
+import '../scss/style.scss';
 
 class DocumentHead extends Component {
 
@@ -8,7 +8,6 @@ class DocumentHead extends Component {
 
 		return (
 			<Head>
-				<style dangerouslySetInnerHTML={ { __html: stylesheet } } />
 				<meta
 					name="viewport"
 					content="width=device-width, initial-scale=1"
