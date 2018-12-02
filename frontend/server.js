@@ -26,6 +26,8 @@ const getPath = (url) => {
 const settingsEndpoint = `${Config.apiUrl}/wp-json/`
 // WP API endpoint for getting the menu.
 const menuEndpoint = `${Config.apiUrl}/wp-json/menus/v1/menus/header-menu`;
+// WP API endpoint for getting all post categories.
+const categoriesEndpoint = `${Config.apiUrl}/wp-json/wp/v2/categories`;
 // WP API endpoint for getting the array of posts.
 const postsEndpoint = `${Config.apiUrl}/wp-json/better-rest-endpoints/v1/posts?content=false`;
 // WP API endpoint for getting the array of pages.
@@ -54,6 +56,7 @@ app
 			const posts = await api(postsEndpoint).then((response) => response);
 			const pages = await api(pagesEndpoint).then((response) => response);
 			const options = await api(optionsEndpoint).then((response) => response);
+			const categories = await api(categoriesEndpoint).then((response) => response);
 
 			const { name, description, url, home } = globalSettings; // eslint-disable-line camelcase
 			const settings = {
@@ -65,12 +68,22 @@ app
 
 			console.log('Node Server finished getting WP API data!');
 
+			console.log({
+				settings,
+				menu,
+				posts,
+				pages,
+				options,
+				categories
+			});
+
 			return {
 				settings,
 				menu,
 				posts,
 				pages,
-				options
+				options,
+				categories
 			};
 		}
 
@@ -112,17 +125,20 @@ app
 
 		// Category taxonomy indexes.
 
-		server.get('/category/:slug', (req, res) => {
-			const actualPage = '/category';
-			const queryParams = {
-				slug: req.params.slug,
-				menu: serverData.menu,
-				settings: serverData.settings,
-				options: serverData.options.acf
-			};
+		await serverData.categories.forEach((category) =>
+			server.get(getPath(category.link), (req, res) => {
+				const actualPage = '/category';
+				const queryParams = {
+					id: category.id,
+					slug: category.slug,
+					menu: serverData.menu,
+					settings: serverData.settings,
+					options: serverData.options.acf
+				};
 
-			app.render(req, res, actualPage, queryParams);
-		});
+				app.render(req, res, actualPage, queryParams);
+			})
+		);
 
 		// Preview links from WP Admin.
 

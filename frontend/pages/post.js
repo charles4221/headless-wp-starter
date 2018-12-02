@@ -48,7 +48,7 @@ class Post extends Component {
 
 		return (
 			<div>
-				<p>{'This page has ACF data — but we haven\'t built out any ACF components yet! The data has been logged to console for reference.'}</p>
+				<p>{'This page has ACF data — but you haven\'t built out any ACF components yet! The data has been logged to console and printed below for your reference.'}</p>
 				<code>
 					{ JSON.stringify(data) }
 				</code>

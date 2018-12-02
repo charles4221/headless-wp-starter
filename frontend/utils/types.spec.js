@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
  */
 export const childComponentTypes = PropTypes.oneOfType([
 	PropTypes.element,
-	PropTypes.arrayOf(PropTypes.element)
+	PropTypes.arrayOf(PropTypes.element),
+	PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.element))
 ]);
 
 /**
@@ -105,7 +106,7 @@ export const postPropTypes = PropTypes.shape({
 	author_nicename: PropTypes.string,
 	category_ids: PropTypes.arrayOf(PropTypes.number),
 	category_names: PropTypes.arrayOf(PropTypes.string),
-	content: PropTypes.string.isRequired,
+	content: PropTypes.string,
 	date: PropTypes.string,
 	excerpt: PropTypes.string,
 	id: PropTypes.number.isRequired,
@@ -127,8 +128,20 @@ export const postPropTypes = PropTypes.shape({
 });
 
 /**
- * Static types for `/wp-json/acf/v2/options` REST endpoint.
+ * Static types for `/wp-json/acf/v3/options/headless-settings` REST endpoint.
  */
 export const optionsPropTypes = PropTypes.shape({
 	footerCopyright: PropTypes.string.isRequired
+})
+
+/**
+ * Static types for `/wp-json/wp/v2/categories/{slug|id}` REST endpoint.
+ */
+export const categoryPropTypes = PropTypes.shape({
+	id: PropTypes.number.isRequired,
+	link: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
+	parent: PropTypes.number.isRequired,
+	slug: PropTypes.string.isRequired,
+	taxonomy: 'category'.isRequired
 })

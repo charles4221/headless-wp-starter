@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import fetch from 'isomorphic-unfetch';
 import Error from 'next/error';
 import Layout from '../components/Layout';
 import PageWrapper from '../components/PageWrapper';
 import Config from '../config';
+import { api } from '../utils/Helpers';
 
 class Preview extends Component {
 
@@ -17,11 +17,10 @@ class Preview extends Component {
 	componentDidMount() {
 		const { id, wpnonce, menu, settings } = this.props.url.query;
 
-		fetch(
+		api(
 			`${Config.apiUrl}/wp-json/postlight/v1/post/preview?id=${id}&_wpnonce=${wpnonce}`,
 			{ credentials: 'include' } // required for cookie nonce auth
 		)
-			.then((res) => res.json())
 			.then((res) => {
 				this.setState({
 					post: res

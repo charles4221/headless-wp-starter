@@ -16,10 +16,10 @@ class Yoast extends Component {
 				{/* TODO: set the actual locale - CH */}
 				<meta property="og:locale" content="en_US" />
 				<meta property="og:type" content="article" />
-				{ yoast['yoast_wpseo_opengraph-title'] &&
+				{ yoast['yoast_wpseo_opengraph-title'] !== '' &&
 					<meta property="og:title" content={ yoast['yoast_wpseo_opengraph-title'] } />
 				}
-				{ yoast['yoast_wpseo_opengraph-description'] &&
+				{ yoast['yoast_wpseo_opengraph-description'] !== '' &&
 					<meta property="og:description" content={ yoast['yoast_wpseo_opengraph-description'] } />
 				}
 				<meta property="og:url" content={
@@ -30,11 +30,11 @@ class Yoast extends Component {
 				{ settings.name &&
 					<meta property="og:site_name" content={ settings.name } />
 				}
-				{ yoast['yoast_wpseo_opengraph-image'] &&
-					<>
-						<meta property="og:image" content={ yoast['yoast_wpseo_opengraph-image'] } />
-						<meta property="og:image:secure_url" content={ yoast['yoast_wpseo_opengraph-image'].replace('http://', 'https://') } />
-					</>
+				{ yoast['yoast_wpseo_opengraph-image'] !== '' &&
+					<meta property="og:image" content={ yoast['yoast_wpseo_opengraph-image'] } />
+				}
+				{ yoast['yoast_wpseo_opengraph-image'] !== '' &&
+					<meta property="og:image:secure_url" content={ yoast['yoast_wpseo_opengraph-image'].replace('http://', 'https://') } />
 				}
 			</>
 		)
@@ -61,35 +61,35 @@ class Yoast extends Component {
 
 		return (
 			<Head>
-				{ yoast.yoast_wpseo_title
-					? <title>{ yoast.yoast_wpseo_title }</title>
-					: <title>{ this.props.title }</title>
+				{ yoast.yoast_wpseo_title === ''
+					? <title>{ this.props.title }</title>
+					: <title>{ yoast.yoast_wpseo_title }</title>
 				}
-				{ yoast.yoast_wpseo_metadesc
-					? <meta name="description" content={ yoast.yoast_wpseo_metadesc } />
-					: <meta name="description" content={ settings.description } />
+				{ yoast.yoast_wpseo_metadesc === ''
+					? <meta name="description" content={ settings.description } />
+					: <meta name="description" content={ yoast.yoast_wpseo_metadesc } />
 				}
 				{ (noindex || nofollow) &&
 					<meta name="robots" content={
 						`${noindex ? 'noindex' : ''},${nofollow ? 'nofollow' : ''}`
 					} />
 				}
-				{ yoast['yoast_wpseo_opengraph-title'] &&
+				{ yoast['yoast_wpseo_opengraph-title'] !== '' &&
 					this.renderOpenGraph()
 				}
-				{ yoast['yoast_wpseo_twitter-title'] &&
+				{ yoast['yoast_wpseo_twitter-title'] !== '' &&
 					this.renderTwitterCard()
 				}
 				{ this.props.categoryNames && this.props.categoryNames.length > 0 &&
 					<meta property="article:section" content={ this.props.categoryNames[0] } />
 				}
-				{ this.props.date &&
+				{ this.props.date && this.props.date !== '' &&
 					<meta property="article:published_time" content={ this.props.date } />
 				}
-				{ this.props.date_modified &&
+				{ this.props.date_modified && this.props.date_modified !== '' &&
 					<meta property="article:modified_time" content={ this.props.date_modified } />
 				}
-				{ yoast.yoast_wpseo_metakeywords &&
+				{ yoast.yoast_wpseo_metakeywords !== '' &&
 					<meta name="keywords" content={ yoast.yoast_wpseo_metakeywords } />
 				}
 			</Head>
